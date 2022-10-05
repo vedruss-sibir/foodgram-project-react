@@ -21,7 +21,6 @@ from recipes.models import (
 from api.pagination import LimitPageNumberPagination
 from api.permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 from api.serializers import (
-    CropRecipeSerializer,
     IngredientSerializer,
     RecipeSerializer,
     TagSerializer,
@@ -35,11 +34,9 @@ class TagsViewSet(ReadOnlyModelViewSet):
 
 
 class IngredientsViewSet(ReadOnlyModelViewSet):
-    permission_classes = (IsAdminOrReadOnly,)
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    filter_backends = (IngredientSearchFilter,)
-    search_fields = ("^name",)
+    search_fields = ("name",)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -72,7 +69,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return self.delete_obj(ShoppingCart, request.user, pk)
         return None
 
-    @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
+    @action(detail=False, permission_classes=[IsAuthenticated])
     def download_shopping_cart(self, request):
         final_list = {}
         ingredients = RecipeIngredient.objects.filter(
@@ -111,8 +108,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
         recipe = get_object_or_404(Recipe, id=pk)
         model.objects.create(user=user, recipe=recipe)
-        serializer = CropRecipeSerializer(recipe)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    #        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete_obj(self, model, user, pk):
         obj = model.objects.filter(user=user, recipe__id=pk)
