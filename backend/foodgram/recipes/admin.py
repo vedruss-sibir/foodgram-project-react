@@ -14,7 +14,7 @@ from import_export.admin import ImportMixin
 
 
 class IngredientsInline(admin.TabularInline):
-    model = Ingredient
+    model = RecipeIngredient
     extra = 1
 
 
@@ -35,7 +35,7 @@ class IngredientAdmin(ImportMixin, admin.ModelAdmin):
 
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ("pk", "name", "author", "pub_date")
-    #    inlines = IngredientsInline
+    inlines = [IngredientsInline]
     list_filter = ("author", "name", "tags")
 
 
