@@ -9,9 +9,7 @@ class User(AbstractUser):
     )
     first_name = models.CharField(verbose_name="Имя", max_length=150, blank=True)
     last_name = models.CharField(verbose_name="Фамилия", max_length=150, blank=True)
-    username = models.CharField(
-        verbose_name="Ник", max_length=150, blank=True, unique=True
-    )
+    username = models.CharField(verbose_name="Ник", max_length=150, blank=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
@@ -42,12 +40,6 @@ class Follow(models.Model):
         ordering = ["-id"]
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user", "author"],
-                name="unique follow",
-            )
-        ]
 
 
 class Ingredient(models.Model):
@@ -64,8 +56,8 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField("Название", max_length=60)
-    color = models.CharField("Цвет", max_length=7)
+    name = models.CharField("Название", max_length=60, unique=True)
+    color = models.CharField("Цвет в HEX формате", max_length=7, unique=True)
     slug = models.SlugField("Ссылка", max_length=100, unique=True)
 
     class Meta:
@@ -124,19 +116,22 @@ class RecipeIngredient(models.Model):
     )
 
     def __str__(self):
-        return f"{self.ingredients} для {self.recipe}"
+        return f"{self.ingredients} {self.recipe} {self.amount}"
 
 
 class FavoriteRecipe(models.Model):
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         null=True,
         related_name="favorite_recipe",
         verbose_name="Пользователь",
     )
-    recipe = models.ManyToManyField(
-        Recipe, related_name="favorite_recipe", verbose_name="Избранный рецепт"
+    recipe = models.ForeignKey(
+        Recipe,
+        related_name="favorite_recipe",
+        verbose_name="Избранный рецепт",
+        on_delete=models.CASCADE,
     )
 
     class Meta:
@@ -144,20 +139,22 @@ class FavoriteRecipe(models.Model):
         verbose_name_plural = "Избранные рецепты"
 
     def __str__(self):
-        list_ = [item["name"] for item in self.recipe.values("name")]
-        return f"Пользователь {self.user} добавил рецепт {list_} в избранные."
+        return f"Пользователь {self.user} добавил рецепт {self.recipe} в избранные."
 
 
 class ShoppingCart(models.Model):
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         null=True,
         related_name="shopping_cart",
         verbose_name="Пользователь",
     )
-    recipe = models.ManyToManyField(
-        Recipe, related_name="shopping_cart", verbose_name="Покупка"
+    recipe = models.ForeignKey(
+        Recipe,
+        related_name="shopping_cart",
+        verbose_name="Покупка",
+        on_delete=models.CASCADE,
     )
 
     class Meta:
@@ -166,5 +163,4 @@ class ShoppingCart(models.Model):
         ordering = ("-id",)
 
     def __str__(self):
-        list_ = [item["name"] for item in self.recipe.values("name")]
-        return f"Пользователь {self.user} добавил список {list_} в покупки."
+        return f"Пользователь {self.user} добавил список {self.recipe} в покупки."

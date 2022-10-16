@@ -19,8 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("auth/", include("djoser.urls")),
-    # JWT-эндпоинты, для управления JWT-токенами:
-    path("auth/", include("djoser.urls.jwt")),
     path("api/", include("recipes.urls", namespace="api")),
 ]
