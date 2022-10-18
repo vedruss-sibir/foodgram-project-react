@@ -36,9 +36,10 @@ from api.serializers import (
     TagSerializer,
     FavoriteValidateSerializer,
     RecipesReadSerializer,
-    CustomUserSerializer,
+    ShoppingCartValidateSerializer,
     FollowSerializer,
 )
+from api.utils import get_shopping_list
 
 
 class SubscribesViewSet(viewsets.ModelViewSet):
@@ -89,7 +90,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsOwnerOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        author = self.request.author
+        return serializer.save(author=author)
 
     @action(
         detail=True, methods=["POST", "DELETE"], permission_classes=(IsAuthenticated,)
@@ -111,3 +113,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
         )
         recipe_in_favorite.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(
+        detail=True, methods=["POST", "DELETE"], permission_classes=(IsAuthenticated,)
+    )
+    def shopping_cart(self, request, pk):
+        current_user = request.user
+        recipe = get_object_or_404(Recipe, pk=pk)
+        serializer = ShoppingCartValidateSerializer(
+            data=request.data,
+            context={"request": request, "recipe": recipe},
+        )
+        serializer.is_valid(raise_exception=True)
+        if request.method == "POST":
+            ShoppingCart.objects.create(user=current_user, recipe=recipe)
+            serializer = RecipesReadSerializer(recipe)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        recipe_in_cart = ShoppingCart.objects.filter(user=current_user, recipe=recipe)
+        recipe_in_cart.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, permission_classes=(IsAuthenticated,))
+    def download_shopping_cart(self, request):
+        return get_shopping_list(request)
