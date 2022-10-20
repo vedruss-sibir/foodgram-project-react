@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 
-from recipes.models import ShoppingCart
+from recipes.models import ShoppingCart, RecipeIngredient, Ingredient
 
 
 def get_shopping_list(request):
@@ -27,3 +27,13 @@ def get_shopping_list(request):
     response = HttpResponse(content, content_type="text/plain")
     response["Content-Disposition"] = "attachment; filename={0}".format(filename)
     return response
+
+
+def create_ubdate_ingredients(recipe, ingredients):
+    for ingredient in ingredients:
+        current_ingredient, status = Ingredient.objects.get_or_create(**ingredient)
+        RecipeIngredient.objects.create(
+            recipe=recipe,
+            ingredient=current_ingredient,
+            amount=ingredient.get("amount"),
+        )

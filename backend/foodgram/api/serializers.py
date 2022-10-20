@@ -14,6 +14,7 @@ from recipes.models import (
     FavoriteRecipe,
     ShoppingCart,
 )
+from api.utils import create_ubdate_ingredients
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -108,19 +109,6 @@ class TagSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class IngredientsRecipeSerializer(serializers.ModelSerializer):
-    id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
-    name = serializers.CharField(read_only=True, source="ingredient.name")
-    measurement_unit = serializers.CharField(
-        read_only=True, source="ingredient.measurement_unit"
-    )
-    amount = serializers.IntegerField(read_only=True)
-
-    class Meta:
-        model = RecipeIngredient
-        fields = ("id", "name", "measurement_unit", "amount")
-
-
 class AmountSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source="ingredients.id")
     name = serializers.CharField(source="ingredients.name")
@@ -147,7 +135,7 @@ class Base64ImageField(serializers.ImageField):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    ingredients = IngredientsRecipeSerializer(many=True, source="ingredient_recipe")
+    ingredients = AmountSerializer(many=True, source="ingredient_recipe")
     image = Base64ImageField()
     tags = TagSerializer(many=True)
     author = CustomUserSerializer()
@@ -182,17 +170,11 @@ class RecipeSerializer(serializers.ModelSerializer):
         return Recipe.objects.filter(author=curent_user, id=obj.id).exists()
 
     def create(self, validated_data):
-        ingredients_data = validated_data.pop("ingredients")
+        ingredients = validated_data.pop("ingredients")
         recipe = Recipe.objects.create(**validated_data)
         tags_data = self.initial_data.get("tags")
         recipe.tags.set(tags_data)
-        for ingredient in ingredients_data:
-            current_ingredient, status = Ingredient.objects.get_or_create(**ingredient)
-            RecipeIngredient.objects.create(
-                recipe=recipe,
-                ingredient=current_ingredient,
-                amount=ingredient.get("amount"),
-            )
+        create_ubdate_ingredients(recipe, ingredients)
         recipe.is_favorited = False
         recipe.is_in_shopping_cart = False
         recipe.save()
@@ -201,18 +183,14 @@ class RecipeSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         tags = validated_data.get("tags")
         ingredients = validated_data.get("ingredients")
-        instance.image = validated_data.get("image", instance.image)
-        instance.name = validated_data.get("name", instance.name)
-        instance.text = validated_data.get("text", instance.text)
-        instance.cooking_time = validated_data.get(
-            "cooking_time", instance.cooking_time
-        )
+        super().update(instance, validated_data)
         if tags:
             instance.tags.clear()
             instance.tags.set(tags)
 
         if ingredients:
             instance.ingredients.clear()
+            create_ubdate_ingredients(instance, ingredients)
 
         instance.save()
         return instance

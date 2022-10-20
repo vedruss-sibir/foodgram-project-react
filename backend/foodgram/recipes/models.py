@@ -14,7 +14,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
     class Meta:
-        ordering = ["id"]
+        ordering = ("id",)
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
@@ -50,6 +50,11 @@ class Ingredient(models.Model):
         ordering = ("name",)
         verbose_name = "Ингредиент"
         verbose_name_plural = "Ингредиенты"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["name", "measurement_unit"], name="unique_ingredient"
+            )
+        ]
 
     def __str__(self):
         return f"{self.name}, {self.measurement_unit}."
@@ -116,7 +121,7 @@ class RecipeIngredient(models.Model):
     )
 
     def __str__(self):
-        return f"{self.ingredients} {self.recipe} {self.amount}"
+        return f"{self.ingredients.name} для {self.recipe.name}"
 
 
 class FavoriteRecipe(models.Model):
@@ -163,4 +168,4 @@ class ShoppingCart(models.Model):
         ordering = ("-id",)
 
     def __str__(self):
-        return f"Пользователь {self.user} добавил список {self.recipe} в покупки."
+        return f"Пользователь {self.user.username} добавил список {self.recipe.name} в покупки."
