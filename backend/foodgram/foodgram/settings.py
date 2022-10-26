@@ -16,9 +16,9 @@ load_dotenv()
 SECRET_KEY = 'django-insecure-egr+4%f2+*p7%y(h-7h%c^+5h=npt416vn0zu(8f_v1+3hca21'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['*', 'localhost']
 
 
 AUTH_USER_MODEL = "recipes.User"
@@ -75,11 +75,11 @@ WSGI_APPLICATION = "foodgram.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("DB_NAME", default="postgresql"),
-        "USER": os.getenv("POSTGRES_USER", default="Andre"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", default="ved"),
-        "HOST": os.getenv('localhost'),
-        "PORT": os.getenv("5432"),
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": 'basa',
+        "PORT": "5432",
     }
 }
 

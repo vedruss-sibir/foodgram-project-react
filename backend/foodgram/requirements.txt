@@ -37,7 +37,7 @@ python-dotenv
 pathspec==0.9.0
 Pillow==9.2.0
 platformdirs==2.5.2
-psycopg2==2.9.3
+psycopg2-binary==2.8.6
 pycparser==2.21
 PyJWT==2.4.0
 python-dateutil==2.8.2
