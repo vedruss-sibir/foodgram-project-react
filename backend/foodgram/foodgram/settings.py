@@ -13,12 +13,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-egr+4%f2+*p7%y(h-7h%c^+5h=npt416vn0zu(8f_v1+3hca21'
+SECRET_KEY = "django-insecure-egr+4%f2+*p7%y(h-7h%c^+5h=npt416vn0zu(8f_v1+3hca21"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['*', 'localhost']
+ALLOWED_HOSTS = ["*", "localhost"]
 
 
 AUTH_USER_MODEL = "recipes.User"
@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     "import_export",
     "api",
     "django_filters",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -46,6 +47,11 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+]
+
+INTERNAL_IPS = [
+    "158.160.10.62",
 ]
 
 ROOT_URLCONF = "foodgram.urls"
@@ -78,7 +84,7 @@ DATABASES = {
         "NAME": "postgres",
         "USER": "postgres",
         "PASSWORD": "postgres",
-        "HOST": 'basa',
+        "HOST": "basa",
         "PORT": "5432",
     }
 }

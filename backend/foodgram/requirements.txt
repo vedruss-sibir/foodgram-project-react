@@ -11,6 +11,7 @@ cryptography==37.0.4
 defusedxml==0.7.1
 diff-match-patch==20200713
 Django==3.2.15
+django-debug-toolbar
 django-filter==22.1
 django-import-export==2.8.0
 django-templated-mail==1.1.1
