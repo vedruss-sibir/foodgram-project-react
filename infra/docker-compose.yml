@@ -21,7 +21,7 @@ services:
     depends_on:
       - backend
   backend:
-    image: vedruss9/food:v1
+    build: D:/Dev/foodgram-project-react/backend/foodgram/
     restart: always
     volumes:
       - static_value:/app/static/
@@ -32,9 +32,11 @@ services:
       - ./.env
 
   frontend:
-    image: vedruss9/front:v1
+    build: D:/Dev/foodgram-project-react/frontend/
     volumes:
       - ../frontend/:/app/result_build/
+    depends_on:
+      - backend
 
 volumes:
   static_value:
