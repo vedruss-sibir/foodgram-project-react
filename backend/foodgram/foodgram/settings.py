@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from datetime import timedelta
+from pickle import TRUE
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -18,7 +18,8 @@ SECRET_KEY = "django-insecure-egr+4%f2+*p7%y(h-7h%c^+5h=npt416vn0zu(8f_v1+3hca21
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*", "localhost"]
+ALLOWED_HOSTS = ["*"]
+
 
 
 AUTH_USER_MODEL = "recipes.User"
@@ -36,8 +37,7 @@ INSTALLED_APPS = [
     "recipes",
     "import_export",
     "api",
-    "django_filters",
-    "debug_toolbar",
+    "django_filters",    
 ]
 
 MIDDLEWARE = [
@@ -47,12 +47,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
-]
-
-INTERNAL_IPS = [
-    "158.160.10.62",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",    
 ]
 
 ROOT_URLCONF = "foodgram.urls"
@@ -147,11 +142,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
+    'DEFAULT_FILTER_BACKENDS': [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ]
 }
-
-
-# SIMPLE_JWT = {
-#   # Устанавливаем срок жизни токена
-#    "ACCESS_TOKEN_LIFETIME": timedelta(days=3),
-#   "AUTH_HEADER_TYPES": ("Bearer",),
-#
