@@ -19,9 +19,10 @@ services:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
     depends_on:
+
       - backend
   backend:
-    build: D:/Dev/foodgram-project-react/backend/foodgram/
+    image: vedruss9/food:v3.3
     restart: always
     volumes:
       - static_value:/app/static/
