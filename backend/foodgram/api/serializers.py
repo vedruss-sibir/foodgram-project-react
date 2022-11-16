@@ -144,6 +144,13 @@ class IngredientCreateSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = ["id", "amount"]
 
+    def validate_amount(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                "Кол-во ингридиента, должно быть больше нуля."
+            )
+        return value
+
 
 class RecipeListSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
