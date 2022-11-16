@@ -30,7 +30,7 @@ services:
     depends_on:
       - basa
     env_file:
-      - ./infra/.env
+      - ./.env
 
   frontend:
     build: D:/Dev/foodgram-project-react/frontend/
