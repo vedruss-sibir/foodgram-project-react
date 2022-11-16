@@ -13,13 +13,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-egr+4%f2+*p7%y(h-7h%c^+5h=npt416vn0zu(8f_v1+3hca21"
-
+SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
-
 
 
 AUTH_USER_MODEL = "recipes.User"
@@ -37,7 +35,7 @@ INSTALLED_APPS = [
     "recipes",
     "import_export",
     "api",
-    "django_filters",    
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -47,7 +45,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",    
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 ROOT_URLCONF = "foodgram.urls"
@@ -76,10 +74,10 @@ WSGI_APPLICATION = "foodgram.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": os.getenv("ENGINE"),
         "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
+        "USER": os.getenv("USER"),
+        "PASSWORD": os.getenv("PASSWORD"),
         "HOST": "basa",
         "PORT": "5432",
     }
@@ -142,7 +140,7 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
-    'DEFAULT_FILTER_BACKENDS': [
+    "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
-    ]
+    ],
 }
