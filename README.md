@@ -12,6 +12,3 @@
 - Nginx
 - Gunicorn
 - Docker
-
-Проект доступен по адресу <http://158.160.10.62/recipes>
-
