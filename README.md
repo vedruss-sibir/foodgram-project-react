@@ -21,8 +21,9 @@ Foodgram реализован для публикации рецептов. Ав
 ## Подготовка и запуск проекта
 ### Склонировать репозиторий на локальную машину:
 ```
-git clone https://github.com/NIK-TIGER-BILL/foodgram-project-react
+git clone https://github.com/vedruss-sibir/foodgram-project-react
 ```
+
 ## Для работы с удаленным сервером (на ubuntu):
 * Выполните вход на свой удаленный сервер
 
@@ -94,7 +95,7 @@ sudo docker-compose up -d --build
     sudo docker-compose exec backend python manage.py migrate --noinput
     ```
     - Загрузите ингридиенты  в базу данных (необязательно):  
-    *Если файл не указывать, по умолчанию выберется ingredients.json*
+    
     ```
     sudo docker-compose exec backend python manage.py load_ingredients <Название файла из директории data>
     ```
